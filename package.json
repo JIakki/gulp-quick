@@ -1,0 +1,23 @@
+{
+  "name": "gulp-quick",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "browser-sync": "^2.11.1",
+    "gulp": "^3.9.1",
+    "gulp-nodemon": "^2.0.6",
+    "gulp-sass": "^2.2.0",
+    "gulp-typescript": "^2.12.1"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "gulp-mocha": "^2.2.0"
+  }
+}
