@@ -7,9 +7,7 @@
 
 const gulp = require('gulp');
 const sass = require('gulp-sass');
-const nodemon = require('gulp-nodemon');
 const sync = require('browser-sync').create();
-const ts = require('gulp-typescript');
 
 var gulpif = require('gulp-if');
 var uglify = require('gulp-uglify');
