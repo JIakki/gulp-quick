@@ -11,6 +11,19 @@ const nodemon = require('gulp-nodemon');
 const sync = require('browser-sync').create();
 const ts = require('gulp-typescript');
 
+var gulpif = require('gulp-if');
+var uglify = require('gulp-uglify');
+
+var source = require('vinyl-source-stream')
+var buffer = require('vinyl-buffer');
+var assign = require('lodash.assign');
+var watchify = require('watchify');
+var browserify = require('browserify');
+var stringify = require('stringify');
+
+
+const path = require('path')
+
 
 
 /*============================
@@ -20,17 +33,72 @@ const ts = require('gulp-typescript');
 // Closure for add params to methods 
 
 
-function syncTaks(param, watch) {
-	console.log(arguments)
+/**
+ * Livereload, sync browsers 
+ * @param  {Object} params
+ * @return {Function} 
+ */
+function syncTaks(params) {
 	return function () {
 		sync.init({
 			server: {
-				baseDir: param
+				baseDir: path.join(__dirname + '/' + params.dist) ,
 			},
 			port: 8080
 		});
 
-		gulp.watch(watch).on('change', sync.reload)
+		gulp.watch(path.join(__dirname + '/' + params.dist  + '/*.html') ).on('change', sync.reload)
+	}
+}
+
+/**
+ * Sass task
+ * @param  {Object} params
+ * @return {Function} 
+ */
+function sassTask(params) {
+	return function() {
+		gulp.src( path.join(__dirname + '/' + params.watch) )
+			.pipe(sass({
+				outputStyle: params.style
+			}))
+			.pipe(gulp.dest( path.join(__dirname + '/' + params.dist) ))
+			.pipe(sync.stream({
+				match: path.join(__dirname + '/' + params.dist + '/*.*')
+			}))
+	}
+}
+
+
+/**
+ * Sass task
+ * @param  {Object} params
+ * @return {Function} 
+ */
+function jsTask(params) {
+	var opts = assign({}, watchify.args, {entries: [ path.join(__dirname + '/' + params.main) ]});
+	return function() {
+
+		// if  params.browserify is not exist then just reload page
+		if(!params.browserify) {
+			sync.reload()
+		}
+
+		watchify(
+			browserify(opts)
+			.transform(stringify, {
+				appliesTo: { includeExtensions: ['.html'] }
+			})
+		)
+
+		.bundle()
+		.on('end', () => {
+			sync.reload()
+		})
+		.pipe(source(path.basename(__dirname + '/' + params.main)))
+		.pipe(buffer())
+		.pipe(gulpif( params.minify, uglify() ))
+		.pipe(gulp.dest( path.join(__dirname + '/' + params.dist) ))
 	}
 }
 
@@ -72,17 +140,33 @@ function Quick() {
 
 }
 
-Quick.prototype.sync = function(path, watch) {
+Quick.prototype.sync = function(params) {
 
-	gulp.task('sync', syncTaks(path, watch));
+	gulp.task('sync', syncTaks(params));
 
+	return this;
+}
+
+Quick.prototype.sass = function (params) {
+
+	gulp.watch( path.join(__dirname + '/' + params.watch) , ['sass'])
+
+	gulp.task('sass', sassTask(params));
+
+	return this;
+}
+
+Quick.prototype.js = function(params) {
+	gulp.watch( path.join(__dirname + '/' + params.watch) , ['js'])
+
+	gulp.task('js', jsTask(params));
 }
 
 Quick.prototype.run = function() {
 	let self = this;
 
 	if(self.task) {
-		gulp.run(self.task);
+		gulp.run(self.task)
 	}
 }
 

@@ -1,8 +1,26 @@
 var gulp = require('gulp')
 var quick = require('../index');
 
-quick.sync(__dirname + '/e2e', [
-	__dirname + '/e2e/*'
-]);
+quick.sync({
+	dist: './test/e2e/'
+});
 
-quick.run()
+quick.sass({
+	style: 'compressed',
+	dist: './test/e2e/dist',
+	watch: [
+		'./test/e2e/sass/**'
+	]
+})
+
+quick.js({
+	browserify: true,
+	minify: true, // working with browserify
+	main: './test/e2e/js/index.js',
+	dist: './test/e2e/dist',
+	watch: [
+		'./test/e2e/js/**'
+	]
+})
+
+quick.run();

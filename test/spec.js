@@ -13,11 +13,24 @@ describe("gulp-quick", () => {
 	it("sync", () => {
 		expect(quick.sync).to.be.a('function');
 		expect(quick.task).to.have.length(0);
-		quick.sync(__dirname + '/e2e', [
-			__dirname + '/e2e/*'
-		]);
+		quick.sync({
+			dist: __dirname + '/e2e',
+			watch: [
+				__dirname + '/e2e/*.html'
+			]
+		});
 		expect(quick.task).to.have.length(1);
 	});
+
+	it('sass', () => {
+		expect(quick.sass).to.be.a('function');
+		quick.sass({
+			dist: __dirname + '/e2e/dist',
+			watch: [
+				__dirname + '/e2e/sass/**'
+			]
+		})
+	})
 
 	it('run', () => {
 		quick.run();
