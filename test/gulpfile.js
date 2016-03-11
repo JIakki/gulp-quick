@@ -1,4 +1,3 @@
-var gulp = require('gulp')
 var quick = require('../index');
 
 quick.sync({
