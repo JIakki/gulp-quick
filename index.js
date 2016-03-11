@@ -22,6 +22,8 @@ var stringify = require('stringify');
 
 const path = require('path')
 
+var root = path.dirname(require.main.filename);
+
 
 
 /*============================
@@ -40,12 +42,12 @@ function syncTaks(params) {
 	return function () {
 		sync.init({
 			server: {
-				baseDir: path.join(__dirname + '/' + params.dist) ,
+				baseDir: path.join(root + '/' + params.dist) ,
 			},
 			port: 8080
 		});
 
-		gulp.watch(path.join(__dirname + '/' + params.dist  + '/*.html') ).on('change', sync.reload)
+		gulp.watch(path.join(root + '/' + params.dist  + '/*.html') ).on('change', sync.reload)
 	}
 }
 
@@ -56,13 +58,13 @@ function syncTaks(params) {
  */
 function sassTask(params) {
 	return function() {
-		gulp.src( path.join(__dirname + '/' + params.watch) )
+		gulp.src( path.join(root + '/' + params.watch) )
 			.pipe(sass({
 				outputStyle: params.style
 			}))
-			.pipe(gulp.dest( path.join(__dirname + '/' + params.dist) ))
+			.pipe(gulp.dest( path.join(root + '/' + params.dist) ))
 			.pipe(sync.stream({
-				match: path.join(__dirname + '/' + params.dist + '/*.*')
+				match: path.join(root + '/' + params.dist + '/*.*')
 			}))
 	}
 }
@@ -74,7 +76,7 @@ function sassTask(params) {
  * @return {Function} 
  */
 function jsTask(params) {
-	var opts = assign({}, watchify.args, {entries: [ path.join(__dirname + '/' + params.main) ]});
+	var opts = assign({}, watchify.args, {entries: [ path.join(root + '/' + params.main) ]});
 	return function() {
 
 		// if  params.browserify is not exist then just reload page
@@ -93,10 +95,10 @@ function jsTask(params) {
 		.on('end', () => {
 			sync.reload()
 		})
-		.pipe(source(path.basename(__dirname + '/' + params.main)))
+		.pipe(source(path.basename(root + '/' + params.main)))
 		.pipe(buffer())
 		.pipe(gulpif( params.minify, uglify() ))
-		.pipe(gulp.dest( path.join(__dirname + '/' + params.dist) ))
+		.pipe(gulp.dest( path.join(root + '/' + params.dist) ))
 	}
 }
 
@@ -147,7 +149,7 @@ Quick.prototype.sync = function(params) {
 
 Quick.prototype.sass = function (params) {
 
-	gulp.watch( path.join(__dirname + '/' + params.watch) , ['sass'])
+	gulp.watch( path.join(root + '/' + params.watch) , ['sass'])
 
 	gulp.task('sass', sassTask(params));
 
@@ -155,7 +157,7 @@ Quick.prototype.sass = function (params) {
 }
 
 Quick.prototype.js = function(params) {
-	gulp.watch( path.join(__dirname + '/' + params.watch) , ['js'])
+	gulp.watch( path.join(root + '/' + params.watch) , ['js'])
 
 	gulp.task('js', jsTask(params));
 }
