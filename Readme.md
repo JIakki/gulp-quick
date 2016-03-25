@@ -31,7 +31,7 @@ quick.sass({
 	]
 })
 
-// collect you js
+// collect your js
 quick.js({
 	browserify: true, // plugin for require() file like in node.js
 	minify: true, // working with browserify
