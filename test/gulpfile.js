@@ -1,24 +1,16 @@
 var quick = require('../index');
 
 quick.sync({
-	dist: './test/e2e/'
+	dist: './e2e/'
 });
-
-quick.sass({
-	style: 'compressed',
-	dist: './test/e2e/dist',
-	watch: [
-		'./test/e2e/sass/**'
-	]
-})
 
 quick.js({
 	browserify: true,
-	minify: true, // working with browserify
-	main: './test/e2e/js/index.js',
-	dist: './test/e2e/dist',
+	//minify: true, // working with browserify
+	main: './e2e/js/index.js',
+	dist: './e2e/dist',
 	watch: [
-		'./test/e2e/js/**'
+		'./e2e/js/**'
 	]
 })
 

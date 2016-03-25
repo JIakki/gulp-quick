@@ -1,6 +1,6 @@
 {
   "name": "gulp-quick",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "",
   "main": "index.js",
   "repository": {
@@ -24,6 +24,7 @@
     "stringify": "^5.1.0",
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.1.0",
+    "gulp-babel": "^6.1.2",
     "watchify": "^3.7.0"
   },
   "devDependencies": {

@@ -10,6 +10,7 @@ const sass = require('gulp-sass');
 const sync = require('browser-sync').create();
 
 var gulpif = require('gulp-if');
+var babel = require('gulp-babel');
 var uglify = require('gulp-uglify');
 
 var source = require('vinyl-source-stream')
@@ -92,12 +93,15 @@ function jsTask(params) {
 		)
 
 		.bundle()
+
 		.on('end', () => {
 			sync.reload()
 		})
 		.pipe(source(path.basename(root + '/' + params.main)))
 		.pipe(buffer())
 		.pipe(gulpif( params.minify, uglify() ))
+		.pipe(babel({
+		}))
 		.pipe(gulp.dest( path.join(root + '/' + params.dist) ))
 	}
 }
